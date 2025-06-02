@@ -20,40 +20,32 @@
 <body>
   <canvas id="live2dCanvas"></canvas>
 
-  <!-- 📦 Cubism 4 Runtime for Web -->
-  <script src="https://unpkg.com/@cubism/cubism4@1.0.1/dist/live2dcubismcore.min.js"></script>
-  <script src="https://unpkg.com/@cubism/cubism4@1.0.1/dist/framework.min.js"></script>
+  <!-- ✅ BON CDN Compatible avec .moc3 -->
+  <script src="https://cdn.jsdelivr.net/npm/pixi.js@6.x/dist/browser/pixi.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display@4.2.0/dist/index.min.js"></script>
 
   <script>
-    const canvas = document.getElementById("live2dCanvas");
+    const app = new PIXI.Application({
+      view: document.getElementById("live2dCanvas"),
+      autoStart: true,
+      backgroundAlpha: 0,
+      resizeTo: window
+    });
 
-    // Charger le Live2D
-    fetch("philou_corrected.model3.json")
-      .then(res => res.json())
-      .then(async json => {
-        const { Live2DCubismFramework } = window;
+    PIXI.live2d.Live2DModel.from("philou_corrected.model3.json").then(model => {
+      model.scale.set(0.5);
+      model.x = app.renderer.width / 2 - model.width / 2;
+      model.y = app.renderer.height / 2 - model.height / 2;
 
-        // Création du manager
-        const manager = new Live2DCubismFramework.CubismFramework();
-        Live2DCubismFramework.CubismFramework.startUp();
-        Live2DCubismFramework.CubismFramework.initialize();
+      app.stage.addChild(model);
 
-        // Charger le fichier .moc3
-        const moc3 = await fetch(json.FileReferences.Moc).then(r => r.arrayBuffer());
-        const moc = Live2DCubismFramework.CubismMoc.create(moc3);
-        const model = moc.createModel();
-
-        // Ajouter au canvas
-        const gl = canvas.getContext("webgl");
-        model.saveParameters();
-        model.update();
-        model.draw(gl);
-
-        // 🎤 Voix du navigateur
-        const phrase = new SpeechSynthesisUtterance("Salut, moi c'est Philou !");
-        phrase.lang = "fr-FR";
-        speechSynthesis.speak(phrase);
-      });
+      // ✅ Synthèse vocale
+      const message = new SpeechSynthesisUtterance("Salut, moi c'est Philou !");
+      message.lang = "fr-FR";
+      speechSynthesis.speak(message);
+    }).catch(err => {
+      console.error("Erreur de chargement :", err);
+    });
   </script>
 </body>
 </html>
