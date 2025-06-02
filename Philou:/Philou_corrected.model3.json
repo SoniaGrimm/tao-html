@@ -1,0 +1,30 @@
+{
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "Philou.moc3",
+    "Textures": [
+      "texture_00.png"
+    ],
+    "Physics": "Philou.physics3.json",
+    "DisplayInfo": "Philou.cdi3.json",
+    "MotionSync": "Philou.motionsync3.json"
+  },
+  "Groups": [
+    {
+      "Target": "Parameter",
+      "Name": "LipSync",
+      "Ids": [
+        "ParamMouthFormY",
+        "ParamOpenFormY"
+      ]
+    },
+    {
+      "Target": "Parameter",
+      "Name": "EyeBlink",
+      "Ids": [
+        "ParamEyeLOpen",
+        "ParamEyeROpen"
+      ]
+    }
+  ]
+}
