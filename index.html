@@ -1,57 +1,45 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Philou</title>
+  <meta charset="UTF-8">
+  <title>Philou te parle !</title>
   <style>
-    body {
-      margin: 0;
-      background-color: #f0f0f0;
-      overflow: hidden;
-    }
-    canvas {
-      display: block;
-      margin: auto;
-    }
+    body { margin: 0; background: #fff; overflow: hidden; }
+    canvas { position: absolute; top: 0; left: 0; }
   </style>
 </head>
 <body>
-  <canvas id="live2d" width="600" height="600"></canvas>
-
-  <script src="https://unpkg.com/pixi.js/dist/pixi.min.js"></script>
-  <script src="https://unpkg.com/@cubism/cubism4@1.0.0/live2dcubismcore.min.js"></script>
-  <script src="https://unpkg.com/@cubism/cubism4@1.0.0/cubism4.min.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/pixi.js@5.3.3/dist/pixi.min.js"></script>
+  <script src="https://unpkg.com/pixi-live2d-display@latest/dist/index.min.js"></script>
   <script>
-    async function loadPhilou() {
+    const { Live2DModel } = PIXI.live2d;
+
+    (async () => {
       const app = new PIXI.Application({
-        view: document.getElementById('live2d'),
+        view: document.body.appendChild(document.createElement("canvas")),
         autoStart: true,
         backgroundAlpha: 0,
+        resizeTo: window
       });
 
-      const model = await PIXI.live2d.Live2DModel.from('Philou_corrected.model3.json');
-      model.scale.set(0.5);
-      model.x = app.renderer.width / 2 - model.width / 2;
-      model.y = app.renderer.height / 2 - model.height / 2;
+      const model = await Live2DModel.from("Philou_corrected.model3.json");
+
+      model.scale.set(0.15); // Taille de Philou
+      model.x = window.innerWidth / 2 - 100;
+      model.y = window.innerHeight * 0.65;
+
       app.stage.addChild(model);
 
-      // Lancement de Voiceflow
-      const response = await fetch('https://tao-proxy2-6-2025-1.onrender.com/state/launch', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userID: 'html-visitor' })
-      });
-      const data = await response.json();
+      model.motion("Idle", 0); // animation d’attente si disponible
 
-      // Faire parler Philou avec la voix du navigateur
-      const firstMessage = data?.[0]?.payload?.message || "Bonjour, je suis Philou !";
-      const utterance = new SpeechSynthesisUtterance(firstMessage);
+      // 🔈 Philou parle à l’arrivée :
+      const text = "Bonjour, moi c’est Philou ! Je suis là pour t’aider.";
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "fr-FR";
+      utterance.pitch = 1.1;
+      utterance.rate = 0.95;
       speechSynthesis.speak(utterance);
-    }
-
-    loadPhilou();
+    })();
   </script>
 </body>
 </html>
