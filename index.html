@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Test Proxy TAO</title>
+</head>
+<body>
+  <h1>Test du proxy TAO</h1>
+  <button onclick="launch()">Lancer TAO</button>
+  <button onclick="send()">Envoyer “bonjour Philou”</button>
+  <pre id="output">Réponse de TAO : </pre>
+
+  <script>
+    const userID = "sonia-test";
+    const endpoint = "https://tao-proxy2-6-2025-1.onrender.com";
+
+    async function launch() {
+      try {
+        const res = await fetch(`${endpoint}/state/launch`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userID })
+        });
+        const data = await res.json();
+        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        console.error("Erreur lancement :", error);
+      }
+    }
+
+    async function send() {
+      try {
+        const res = await fetch(`${endpoint}/state/interact`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userID, message: "bonjour philou" })
+        });
+        const data = await res.json();
+        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        console.error("Erreur message :", error);
+      }
+    }
+  </script>
+</body>
+</html>
