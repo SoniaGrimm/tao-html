@@ -4,53 +4,56 @@
   <meta charset="UTF-8" />
   <title>Philou te parle</title>
   <style>
-    body {
+    html, body {
       margin: 0;
-      background-color: #ffffff;
+      padding: 0;
       overflow: hidden;
+      background: white;
     }
     canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
+      display: block;
+      width: 100vw;
+      height: 100vh;
     }
   </style>
 </head>
 <body>
-  <canvas id="live2dCanvas" width="800" height="800"></canvas>
+  <canvas id="live2dCanvas"></canvas>
 
-  <script src="https://unpkg.com/pixi.js@5.3.3/dist/pixi.min.js"></script>
-  <script src="https://unpkg.com/pixi-live2d-display@0.3.0/dist/index.min.js"></script>
+  <!-- 📦 Cubism 4 Runtime for Web -->
+  <script src="https://unpkg.com/@cubism/cubism4@1.0.1/dist/live2dcubismcore.min.js"></script>
+  <script src="https://unpkg.com/@cubism/cubism4@1.0.1/dist/framework.min.js"></script>
 
   <script>
-    const modelPath = "Philou_corrected.model3.json"; // chemin racine
+    const canvas = document.getElementById("live2dCanvas");
 
-    const app = new PIXI.Application({
-      view: document.getElementById("live2dCanvas"),
-      autoStart: true,
-      backgroundAlpha: 0
-    });
+    // Charger le Live2D
+    fetch("philou_corrected.model3.json")
+      .then(res => res.json())
+      .then(async json => {
+        const { Live2DCubismFramework } = window;
 
-    PIXI.live2d.Live2DModel.from(modelPath).then(model => {
-      model.scale.set(0.4);
-      model.x = app.renderer.width / 2 - model.width / 2;
-      model.y = app.renderer.height / 2 - model.height / 2;
-      app.stage.addChild(model);
+        // Création du manager
+        const manager = new Live2DCubismFramework.CubismFramework();
+        Live2DCubismFramework.CubismFramework.startUp();
+        Live2DCubismFramework.CubismFramework.initialize();
 
-      // Animation de base si elle existe (nommée "Idle" ou autre)
-      if (model.motion) {
-        model.motion("Idle", 0);
-      }
+        // Charger le fichier .moc3
+        const moc3 = await fetch(json.FileReferences.Moc).then(r => r.arrayBuffer());
+        const moc = Live2DCubismFramework.CubismMoc.create(moc3);
+        const model = moc.createModel();
 
-      // Parole automatique via synthèse vocale navigateur
-      const message = new SpeechSynthesisUtterance("Salut, moi c'est Philou ! Je suis là pour t'aider.");
-      message.lang = "fr-FR";
-      message.pitch = 1.3;
-      message.rate = 0.95;
-      speechSynthesis.speak(message);
-    }).catch(error => {
-      console.error("Erreur lors du chargement du modèle :", error);
-    });
+        // Ajouter au canvas
+        const gl = canvas.getContext("webgl");
+        model.saveParameters();
+        model.update();
+        model.draw(gl);
+
+        // 🎤 Voix du navigateur
+        const phrase = new SpeechSynthesisUtterance("Salut, moi c'est Philou !");
+        phrase.lang = "fr-FR";
+        speechSynthesis.speak(phrase);
+      });
   </script>
 </body>
 </html>
