@@ -1,22 +1,55 @@
-<script>
-  const modelPath = "Philou_corrected.model3.json"; // ⬅️ mis à jour
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Philou te parle</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #ffffff;
+      overflow: hidden;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="live2dCanvas" width="800" height="800"></canvas>
 
-  const app = new PIXI.Application({
-    view: document.getElementById("live2dCanvas"),
-    autoStart: true,
-    backgroundAlpha: 0
-  });
+  <!-- PIXI et Live2D -->
+  <script src="https://unpkg.com/pixi.js@5.3.3/dist/pixi.min.js"></script>
+  <script src="https://unpkg.com/pixi-live2d-display@0.3.0/dist/index.min.js"></script>
 
-  PIXI.live2d.Live2DModel.from(modelPath).then(model => {
-    model.scale.set(0.4);
-    model.x = app.renderer.width / 2 - model.width / 2;
-    model.y = app.renderer.height / 2 - model.height / 2;
-    app.stage.addChild(model);
+  <script>
+    const modelPath = "Philou_corrected.model3.json"; // ❗️chemin racine
 
-    model.motion("Idle", 0); // ou remplace par un nom d'animation valide
+    const app = new PIXI.Application({
+      view: document.getElementById("live2dCanvas"),
+      autoStart: true,
+      backgroundAlpha: 0
+    });
 
-    const message = new SpeechSynthesisUtterance("Salut, moi c’est Philou !");
-    message.lang = "fr-FR";
-    speechSynthesis.speak(message);
-  });
-</script>
+    PIXI.live2d.Live2DModel.from(modelPath).then(model => {
+      model.scale.set(0.4);
+      model.x = app.renderer.width / 2 - model.width / 2;
+      model.y = app.renderer.height / 2 - model.height / 2;
+      app.stage.addChild(model);
+
+      // Animation initiale
+      model.motion("Idle", 0);
+
+      // 🎙️ Voix gratuite du navigateur
+      const message = new SpeechSynthesisUtterance("Salut, moi c'est Philou ! Je suis là pour t'aider !");
+      message.lang = "fr-FR";
+      message.pitch = 1.2;
+      message.rate = 0.95;
+      speechSynthesis.speak(message);
+    }).catch(error => {
+      console.error("❌ Échec du chargement du modèle :", error);
+    });
+  </script>
+</body>
+</html>
