@@ -20,9 +20,9 @@
 <body>
   <canvas id="live2dCanvas"></canvas>
 
-  <!-- ✅ CDN fiables -->
-  <script src="https://cdn.jsdelivr.net/npm/pixi.js@6.5.8/dist/pixi.min.js"></script>
-  <script src="https://unpkg.com/pixi-live2d-display@3.1.4/dist/index.min.js"></script>
+  <!-- ✅ Utilise des CDN stables pour PIXI v6 + pixi-live2d -->
+  <script src="https://unpkg.com/pixi.js@6.5.8/dist/pixi.min.js"></script>
+  <script src="https://unpkg.com/pixi-live2d-display@4.2.0/dist/pixi-live2d-display.min.js"></script>
 
   <script>
     const app = new PIXI.Application({
@@ -39,12 +39,11 @@
 
       app.stage.addChild(model);
 
-      // ✅ Synthèse vocale
       const message = new SpeechSynthesisUtterance("Salut, moi c'est Philou !");
       message.lang = "fr-FR";
       speechSynthesis.speak(message);
     }).catch(err => {
-      console.error("Erreur de chargement :", err);
+      console.error("❌ Erreur de chargement :", err);
     });
   </script>
 </body>
