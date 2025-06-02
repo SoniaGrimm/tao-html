@@ -20,7 +20,7 @@
 <body>
   <canvas id="live2dCanvas"></canvas>
 
-  <!-- ✅ Utilise des CDN stables pour PIXI v6 + pixi-live2d -->
+  <!-- ✅ CDN stables pour PIXI v6 + pixi-live2d -->
   <script src="https://unpkg.com/pixi.js@6.5.8/dist/pixi.min.js"></script>
   <script src="https://unpkg.com/pixi-live2d-display@4.2.0/dist/pixi-live2d-display.min.js"></script>
 
@@ -32,13 +32,14 @@
       resizeTo: window
     });
 
-    PIXI.live2d.Live2DModel.from("philou_corrected.model3.json").then(model => {
+    PIXI.live2d.Live2DModel.from("philou_corrected.model3.json", { autoInteract: false }).then(model => {
       model.scale.set(0.5);
       model.x = app.renderer.width / 2 - model.width / 2;
       model.y = app.renderer.height / 2 - model.height / 2;
 
       app.stage.addChild(model);
 
+      // ✅ Synthèse vocale
       const message = new SpeechSynthesisUtterance("Salut, moi c'est Philou !");
       message.lang = "fr-FR";
       speechSynthesis.speak(message);
