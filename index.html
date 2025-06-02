@@ -1,45 +1,44 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Philou te parle !</title>
+  <meta charset="UTF-8" />
+  <title>Philou te parle</title>
   <style>
-    body { margin: 0; background: #fff; overflow: hidden; }
-    canvas { position: absolute; top: 0; left: 0; }
+    body {
+      margin: 0;
+      background-color: #ffffff;
+      overflow: hidden;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
   </style>
 </head>
 <body>
-  <script src="https://cdn.jsdelivr.net/npm/pixi.js@5.3.3/dist/pixi.min.js"></script>
-  <script src="https://unpkg.com/pixi-live2d-display@latest/dist/index.min.js"></script>
+  <canvas id="live2dCanvas" width="800" height="800"></canvas>
+
+  <script src="https://unpkg.com/pixi.js@5.3.3/dist/pixi.min.js"></script>
+  <script src="https://unpkg.com/pixi-live2d-display@0.3.0/dist/index.min.js"></script>
   <script>
-    const { Live2DModel } = PIXI.live2d;
+    const modelPath = "Philou/Philou_corrected.model3.json";
 
-    (async () => {
-      const app = new PIXI.Application({
-        view: document.body.appendChild(document.createElement("canvas")),
-        autoStart: true,
-        backgroundAlpha: 0,
-        resizeTo: window
-      });
+    const app = new PIXI.Application({
+      view: document.getElementById("live2dCanvas"),
+      autoStart: true,
+      backgroundAlpha: 0
+    });
 
-      const model = await Live2DModel.from("Philou_corrected.model3.json");
-
-      model.scale.set(0.15); // Taille de Philou
-      model.x = window.innerWidth / 2 - 100;
-      model.y = window.innerHeight * 0.65;
-
+    PIXI.live2d.Live2DModel.from(modelPath).then(model => {
+      model.scale.set(0.4);
+      model.x = app.renderer.width / 2 - model.width / 2;
+      model.y = app.renderer.height / 2 - model.height / 2;
       app.stage.addChild(model);
 
-      model.motion("Idle", 0); // animation d’attente si disponible
-
-      // 🔈 Philou parle à l’arrivée :
-      const text = "Bonjour, moi c’est Philou ! Je suis là pour t’aider.";
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "fr-FR";
-      utterance.pitch = 1.1;
-      utterance.rate = 0.95;
-      speechSynthesis.speak(utterance);
-    })();
+      // Lancer l’animation de base (si disponible)
+      model.motion("Idle", 0, "base");
+    });
   </script>
 </body>
 </html>
