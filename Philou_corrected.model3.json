@@ -1,13 +1,13 @@
 {
   "Version": 3,
   "FileReferences": {
-    "Moc": "Philou.moc3",
+    "Moc": "philou.moc3",
     "Textures": [
       "texture_00.png"
     ],
-    "Physics": "Philou.physics3.json",
-    "DisplayInfo": "Philou.cdi3.json",
-    "MotionSync": "Philou.motionsync3.json"
+    "Physics": "philou.physics3.json",
+    "DisplayInfo": "philou.cdi3.json",
+    "MotionSync": "philou.motionsync3.json"
   },
   "Groups": [
     {
