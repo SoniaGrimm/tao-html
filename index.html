@@ -8,7 +8,7 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background: white;
+      background: #fff;
     }
     canvas {
       display: block;
@@ -20,7 +20,7 @@
 <body>
   <canvas id="live2dCanvas"></canvas>
 
-  <!-- ✅ Scripts locaux hébergés dans /js -->
+  <!-- PIXI.js + Live2D -->
   <script src="js/pixi.min.js"></script>
   <script src="js/pixi-live2d-display.min.js"></script>
 
@@ -33,33 +33,31 @@
         resizeTo: window
       });
 
-      PIXI.live2d.Live2DModel.from("philou_corrected.model3.json").then(model => {
+      PIXI.live2d.Live2DModel.from("js/philou_corrected.model3.json").then(model => {
         model.scale.set(0.5);
         model.x = app.renderer.width / 2 - model.width / 2;
         model.y = app.renderer.height / 2 - model.height / 2;
-
         app.stage.addChild(model);
 
-        // ✅ Synthèse vocale
-        const message = new SpeechSynthesisUtterance("Salut, moi c'est Philou !");
-        message.lang = "fr-FR";
-        speechSynthesis.speak(message);
-      }).catch(err => {
-        console.error("❌ Erreur de chargement :", err);
-      });
+        const msg = new SpeechSynthesisUtterance("Salut, moi c'est Philou !");
+        msg.lang = "fr-FR";
+        speechSynthesis.speak(msg);
+      }).catch(err => console.error("❌ Erreur chargement modèle :", err));
     };
   </script>
+
+  <!-- Voiceflow -->
   <script>
-  window.voiceflow = {
-    versionID: "67e26f0e6b6eed36d51ef2bc",
-    assistant: {
-      title: "TAO",
-      color: "#6C63FF"
-    },
-    url: "https://general-runtime.voiceflow.com",
-    enableMic: true
-  };
-</script>
-<script src="https://cdn.voiceflow.com/widget/bundle.mjs" type="module"></script>
+    window.voiceflow = {
+      versionID: "your-voiceflow-version-id", // ← Remplace par le tien
+      assistant: {
+        title: "TAO",
+        color: "#6C63FF"
+      },
+      url: "https://general-runtime.voiceflow.com",
+      enableMic: true
+    };
+  </script>
+  <script src="https://cdn.voiceflow.com/widget/bundle.mjs" type="module"></script>
 </body>
 </html>
